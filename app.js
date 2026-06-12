@@ -280,7 +280,10 @@ function renderMetricsGrid() {
   const driverLeader = state.driverStandings[0];
   const driverLeaderCard = document.getElementById('driver-leader-card');
   if (driverLeader) {
-    const name = formatDriverName(driverLeader.Driver).toUpperCase();
+    let name = formatDriverName(driverLeader.Driver).toUpperCase();
+    if (name === 'ANDREA KIMI ANTONELLI') {
+      name = 'KIMI ANTONELLI';
+    }
     const points = parseFloat(driverLeader.points);
     const avgPoints = (points / state.currentRound).toFixed(1);
     
