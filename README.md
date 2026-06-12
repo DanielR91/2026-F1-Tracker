@@ -2,7 +2,7 @@
 
 Welcome to **F1 Hub**, a premium, minimalist dashboard designed for Formula 1 enthusiasts to track the 2026 Championship campaign in real-time. By wiring together open motorsport telemetry with a high-fidelity dark-mode interface, F1 Hub delivers a refined, distraction-free view of the ongoing season standings and active race weekend sessions.
 
-### [Open F1 Hub Dashboard](index.html)
+### [Open F1 Hub Dashboard](https://2026-f1-tracker.vercel.app/)
 
 ---
 
