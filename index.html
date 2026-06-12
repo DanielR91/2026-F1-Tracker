@@ -63,8 +63,8 @@
       </div>
     </section>
 
-    <!-- 2x2 Leaderboards Grid (4 Symmetrical Tables) -->
-    <main class="leaderboards-grid">
+    <!-- Top Leaderboards (2 Symmetrical Tables) -->
+    <section class="leaderboards-top-grid">
       <!-- Table A: Drivers Standings -->
       <div class="table-card">
         <div class="card-header">
@@ -118,7 +118,10 @@
           </table>
         </div>
       </div>
+    </section>
 
+    <!-- Bottom Leaderboards (3 Symmetrical Tables) -->
+    <section class="leaderboards-bottom-grid">
       <!-- Table C: Pole Position Masters -->
       <div class="table-card">
         <div class="card-header">
@@ -171,7 +174,33 @@
           </table>
         </div>
       </div>
-    </main>
+
+      <!-- Table E: Fastest Pit Crew -->
+      <div class="table-card">
+        <div class="card-header">
+          <h2>FASTEST PIT CREW</h2>
+          <span class="card-sub">MINIMUM PIT STOP TIME</span>
+        </div>
+        <div class="table-wrapper">
+          <table id="pit-crew-table">
+            <thead>
+              <tr>
+                <th style="width: 60px;">RANK</th>
+                <th>TEAM</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Skeletons -->
+              <tr class="skeleton-row"><td colspan="2"></td></tr>
+              <tr class="skeleton-row"><td colspan="2"></td></tr>
+              <tr class="skeleton-row"><td colspan="2"></td></tr>
+              <tr class="skeleton-row"><td colspan="2"></td></tr>
+              <tr class="skeleton-row"><td colspan="2"></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
     <!-- Footer / Status Bar -->
     <footer class="main-footer">

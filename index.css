@@ -321,16 +321,25 @@ body {
   transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 2x2 Leaderboards Grid */
-.leaderboards-grid {
+/* Leaderboards Layout */
+.leaderboards-top-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.leaderboards-bottom-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
 }
 
 @media (max-width: 900px) {
-  .leaderboards-grid {
+  .leaderboards-top-grid,
+  .leaderboards-bottom-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 }
 

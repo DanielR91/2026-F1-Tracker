@@ -57,6 +57,13 @@ const FALLBACK_DATA = {
     { team: "Williams", count: 3 },
     { team: "Red Bull", count: 2 },
     { team: "Cadillac F1 Team", count: 2 }
+  ],
+  pitstops: [
+    { team: "Red Bull", duration: 18.078 },
+    { team: "Ferrari", duration: 17.664 },
+    { team: "McLaren", duration: 17.649 },
+    { team: "Mercedes", duration: 17.741 },
+    { team: "Williams", duration: 18.118 }
   ]
 };
 
@@ -67,6 +74,7 @@ let state = {
   races: [],
   poles: [],
   dnfs: [],
+  pitstops: [],
   currentRound: 6,
   totalRounds: 22
 };
@@ -156,6 +164,55 @@ async function initializeDashboard() {
       state.dnfs = FALLBACK_DATA.dnfs;
     }
 
+    // 6. Fetch and Process Pit Stops for the latest round
+    let pitstopsRes = null;
+    try {
+      pitstopsRes = await fetch(`${API_BASE}/${state.currentRound}/pitstops.json`).then(r => r.ok ? r.json() : null);
+    } catch (e) {
+      console.warn("Could not fetch pitstops for round " + state.currentRound + ", attempting /last/pitstops.json");
+      pitstopsRes = await fetch(`${API_BASE}/last/pitstops.json`).then(r => r.ok ? r.json() : null).catch(() => null);
+    }
+
+    if (pitstopsRes?.MRData?.RaceTable?.Races?.[0]?.PitStops) {
+      const pitStopsList = pitstopsRes.MRData.RaceTable.Races[0].PitStops;
+      const minPitTimes = {};
+      
+      const driverToConstructorName = {};
+      state.driverStandings.forEach(item => {
+        if (item.Driver && item.Constructors?.[0]) {
+          driverToConstructorName[item.Driver.driverId] = item.Constructors[0].name;
+        }
+      });
+      const getConstructorName = (driverId) => {
+        if (driverToConstructorName[driverId]) return driverToConstructorName[driverId];
+        const staticMapping = {
+          'russell': 'Mercedes', 'antonelli': 'Mercedes', 'hamilton': 'Ferrari', 'leclerc': 'Ferrari',
+          'norris': 'McLaren', 'piastri': 'McLaren', 'max_verstappen': 'Red Bull', 'hadjar': 'Red Bull',
+          'lawson': 'RB F1 Team', 'arvid_lindblad': 'RB F1 Team', 'gasly': 'Alpine F1 Team',
+          'colapinto': 'Alpine F1 Team', 'bearman': 'Haas F1 Team', 'ocon': 'Haas F1 Team',
+          'sainz': 'Williams', 'albon': 'Williams', 'bortoleto': 'Audi', 'hulkenberg': 'Audi',
+          'alonso': 'Aston Martin', 'stroll': 'Aston Martin', 'bottas': 'Cadillac F1 Team', 'perez': 'Cadillac F1 Team'
+        };
+        return staticMapping[driverId] || 'Unknown';
+      };
+
+      pitStopsList.forEach(stop => {
+        const teamName = getConstructorName(stop.driverId);
+        const durationSec = parseFloat(stop.duration);
+        if (!isNaN(durationSec)) {
+          if (!minPitTimes[teamName] || durationSec < minPitTimes[teamName]) {
+            minPitTimes[teamName] = durationSec;
+          }
+        }
+      });
+
+      state.pitstops = Object.entries(minPitTimes)
+        .map(([team, duration]) => ({ team, duration }))
+        .sort((a, b) => a.duration - b.duration);
+    } else {
+      state.pitstops = FALLBACK_DATA.pitstops;
+    }
+
     refreshStatus.textContent = 'Status: Live Sync OK';
   } catch (error) {
     console.error('Error fetching F1 live standings, applying premium fallbacks:', error);
@@ -175,6 +232,7 @@ function applyFallbackData() {
   state.races = FALLBACK_DATA.calendar;
   state.poles = FALLBACK_DATA.poles;
   state.dnfs = FALLBACK_DATA.dnfs;
+  state.pitstops = FALLBACK_DATA.pitstops;
   state.currentRound = 6;
   state.totalRounds = 22;
 }
@@ -360,13 +418,26 @@ function renderLeaderboards() {
   dnfBody.innerHTML = '';
   state.dnfs.slice(0, 5).forEach((item, index) => {
     const tr = document.createElement('tr');
-    // Display RANK and TEAM only (as per instructions: omit displaying points or count column in the UI)
     tr.innerHTML = `
       <td>${index + 1}</td>
       <td>${item.team}</td>
     `;
     dnfBody.appendChild(tr);
   });
+
+  // Table E: Fastest Pit Crew
+  const pitCrewBody = document.querySelector('#pit-crew-table tbody');
+  if (pitCrewBody) {
+    pitCrewBody.innerHTML = '';
+    state.pitstops.slice(0, 5).forEach((item, index) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${item.team.toUpperCase()}</td>
+      `;
+      pitCrewBody.appendChild(tr);
+    });
+  }
 }
 
 // Kick off on page load
