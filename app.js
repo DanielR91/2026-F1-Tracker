@@ -434,6 +434,7 @@ function renderLeaderboards() {
       tr.innerHTML = `
         <td>${index + 1}</td>
         <td>${item.team.toUpperCase()}</td>
+        <td style="text-align: right; font-weight: 700; color: var(--text-primary);">${parseFloat(item.duration).toFixed(2)}s</td>
       `;
       pitCrewBody.appendChild(tr);
     });
