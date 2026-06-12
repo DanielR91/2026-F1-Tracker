@@ -421,6 +421,7 @@ function renderLeaderboards() {
     tr.innerHTML = `
       <td>${index + 1}</td>
       <td>${item.team}</td>
+      <td style="text-align: right; font-weight: 700; color: var(--text-primary);">${item.count}</td>
     `;
     dnfBody.appendChild(tr);
   });
