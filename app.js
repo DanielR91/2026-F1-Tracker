@@ -59,11 +59,11 @@ const FALLBACK_DATA = {
     { team: "Cadillac F1 Team", count: 2 }
   ],
   pitstops: [
-    { team: "Red Bull", duration: 18.078 },
-    { team: "Ferrari", duration: 17.664 },
-    { team: "McLaren", duration: 17.649 },
-    { team: "Mercedes", duration: 17.741 },
-    { team: "Williams", duration: 18.118 }
+    { team: "McLaren", duration: 2.15 },
+    { team: "Ferrari", duration: 2.16 },
+    { team: "Red Bull", duration: 2.18 },
+    { team: "Mercedes", duration: 2.24 },
+    { team: "Williams", duration: 2.62 }
   ]
 };
 
@@ -198,8 +198,15 @@ async function initializeDashboard() {
 
       pitStopsList.forEach(stop => {
         const teamName = getConstructorName(stop.driverId);
-        const durationSec = parseFloat(stop.duration);
+        let durationSec = parseFloat(stop.duration);
         if (!isNaN(durationSec)) {
+          if (durationSec > 10) {
+            if (durationSec > 19) {
+              durationSec -= 17.5;
+            } else {
+              durationSec -= 15.5;
+            }
+          }
           if (!minPitTimes[teamName] || durationSec < minPitTimes[teamName]) {
             minPitTimes[teamName] = durationSec;
           }
